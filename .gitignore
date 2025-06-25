@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.Python
+env/
+venv/
+.venv/
+
+# Jupyter (if used)
+.ipynb_checkpoints/
+
+# Mac / Windows / Linux system files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.log
+*.tmp
+*.swp
+
+# Streamlit
+.streamlit/config.toml
+.streamlit/secrets.toml
+
+# Generated documents
+documents/
+*.docx
+
+# VSCode / IDEs
+.vscode/
+.idea/
+*.code-workspace
+
+# OS-specific
+ehthumbs.db
+Icon?
+
+# Environment variables or API keys
+.env
