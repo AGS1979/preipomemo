@@ -1,3 +1,4 @@
+import streamlit as st
 import os
 import re
 import fitz  # PyMuPDF
@@ -13,7 +14,7 @@ from docx.shared import Pt, Inches
 from sentence_transformers import SentenceTransformer
 
 # ========== CONFIG ==========
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+DEEPSEEK_API_KEY = st.secrets["deepseek"]["api_key"]
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
 CHUNK_SIZE = 50
 
