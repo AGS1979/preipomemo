@@ -10,12 +10,17 @@ st.set_page_config(page_title="IPO Investment Memo Generator", layout="wide")
 
 st.markdown("""
     <style>
-    /* Hide Streamlit menu and footer, but keep header bar visible */
-    #MainMenu, footer {visibility: hidden;}
+    /* Hide only the 'Made with Streamlit' footer */
+    footer:after {
+        content:'' !important;
+        display:none !important;
+    }
 
-    /* Optional: hide "Made with Streamlit" only */
-    .css-164nlkn.egzxvld1 {display: none;}  /* This targets the "Made with Streamlit" footer */
+    /* Preserve Streamlit menu and top-right controls */
+    #MainMenu {visibility: visible;}
+    header {visibility: visible;}
 
+    /* Font & color styling */
     html, body, [class*="css"] {
         font-family: 'Segoe UI', sans-serif;
         color: #222;
@@ -44,6 +49,7 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
 
 
 # ---------------------------
