@@ -54,13 +54,15 @@ def get_base64_logo(path="logo.png"):
 logo_base64 = get_base64_logo()
 
 # ---------------------------
-# HEADER: LOGO + TITLE
+# HEADER: LOGO + TITLE (Left-Aligned)
 # ---------------------------
 st.markdown(f"""
-<div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;">
-    <img src="data:image/png;base64,{logo_base64}" style="height: 40px; max-width: 240px; margin-bottom: 10px;" />
-    <h1 style="margin: 0; font-size: 2.4rem; color: #010101;">Pre-IPO Investment Memo Generator</h1>
-    <p style="margin: 6px 0 0 0; font-size: 1.1rem; color: #010101;">AI-Powered Investment Analysis from Deal Docs</p>
+<div style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 2rem;">
+    <img src="data:image/png;base64,{logo_base64}" style="height: 60px; max-width: 160px;" />
+    <div>
+        <h1 style="margin-bottom: 0.3rem; font-size: 2rem; font-weight: 800; color: #1F2937;">Pre-IPO Investment Memo Generator</h1>
+        <p style="font-size: 1rem; color: #4B5563; margin-top: 0;">Upload an IPO/DRHP PDF to generate a structured investment memo with optional Q&amp;A.</p>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -121,7 +123,7 @@ if pdf_file:
 # ---------------------------
 st.markdown("""
     <hr>
-    <div style='text-align: center; font-size: 0.85rem; color: gray;'>
+    <div style='text-align: left; font-size: 0.85rem; color: gray;'>
         © 2025 YourCompanyName. All rights reserved.
     </div>
 """, unsafe_allow_html=True)
