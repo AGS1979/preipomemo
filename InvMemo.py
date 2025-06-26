@@ -81,14 +81,17 @@ st.markdown("""
 # HEADER: LOGO + TITLE
 # ---------------------------
 with st.container():
-    col1, col2 = st.columns([0.15, 0.85])
+    col1, col2 = st.columns([0.12, 0.88])
     with col1:
-        st.image("logo.png", width=100)  # Adjust width as needed
+        st.image("2d476294-3a58-4172-9a8b-36145bf06e21.png", use_column_width=False, width=120)
     with col2:
         st.markdown("""
-        <h1 style='margin-bottom: 0.3rem; font-size: 2.2rem; font-weight: 800; color: #1F2937;'>Pre-IPO Investment Memo Generator</h1>
-        <p style='font-size: 1.05rem; color: #4B5563; margin-top: 0;'>Upload an IPO/DRHP PDF to generate a structured investment memo with optional Q&amp;A.</p>
+        <div style='display: flex; flex-direction: column; justify-content: center;'>
+            <h1 style='margin-bottom: 0.3rem; font-size: 2.2rem; font-weight: 800; color: #1F2937;'>Pre-IPO Investment Memo Generator</h1>
+            <p style='font-size: 1.05rem; color: #4B5563; margin-top: 0;'>Upload an IPO/DRHP PDF to generate a structured investment memo with optional Q&amp;A.</p>
+        </div>
         """, unsafe_allow_html=True)
+
 
 # ---------------------------
 # INPUT SECTION
