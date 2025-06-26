@@ -55,8 +55,12 @@ st.markdown("""
 # ---------------------------
 # LOGO + TITLE
 # ---------------------------
-st.markdown("<div style='padding-top: 20px;'></div>", unsafe_allow_html=True)
-st.image("logo.png", width=180)
+with st.container():
+    st.markdown("<div style='padding-top: 40px;'></div>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.image("logo.png", width=180)
+
 st.title("📄 Pre-IPO Investment Memo Generator")
 st.markdown("Upload an IPO/DRHP PDF and get a structured investment memo with optional Q&A.")
 
