@@ -53,20 +53,23 @@ st.markdown("""
 
 
 # ---------------------------
-# LOGO + TITLE
+# LOGO + TITLE (Fixed for local files)
 # ---------------------------
-logo_path = Path("logo.png").as_posix()
-st.markdown(f"""
-    <div style="text-align: center; padding-top: 2rem; padding-bottom: 1.5rem;">
-        <img src="data:image/png;base64,{Path(logo_path).read_bytes().hex()}" style="height: 80px; margin-bottom: 1rem;" />
-        <h1 style="font-size: 2.25rem; font-weight: 800; color: #1F2937; margin-bottom: 0.5rem;">
-            Pre-IPO Investment Memo Generator
-        </h1>
-        <p style="font-size: 1.05rem; color: #4B5563;">
-            Upload an IPO/DRHP PDF to generate a structured investment memo with optional Q&A.
-        </p>
-    </div>
-""", unsafe_allow_html=True)
+with st.container():
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.image("logo.png", width=130)
+        st.markdown("""
+            <div style='text-align: center; margin-top: -10px;'>
+                <h1 style='font-size: 2.3rem; font-weight: 800; margin-bottom: 0.5rem; color: #1F2937;'>
+                    Pre-IPO Investment Memo Generator
+                </h1>
+                <p style='font-size: 1.1rem; color: #4B5563;'>
+                    Upload an IPO/DRHP PDF to generate a structured investment memo with optional Q&A.
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+
 # ---------------------------
 # INPUT SECTION
 # ---------------------------
