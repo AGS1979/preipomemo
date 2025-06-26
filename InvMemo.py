@@ -52,23 +52,30 @@ st.markdown("""
 
 
 
-# ---------------------------
-# LOGO + TITLE (Fixed for local files)
-# ---------------------------
+import streamlit as st
+
+# Top padding removal
+st.markdown("""
+    <style>
+    .block-container {
+        padding-top: 2rem;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Header layout with logo and title aligned
 with st.container():
-    col1, col2, col3 = st.columns([1, 2, 1])
+    col1, col2 = st.columns([0.15, 0.85])
+    with col1:
+        st.image("logo.png", width=80)  # adjust width as per image clarity
     with col2:
-        st.image("logo.png", width=130)
         st.markdown("""
-            <div style='text-align: center; margin-top: -10px;'>
-                <h1 style='font-size: 2.3rem; font-weight: 800; margin-bottom: 0.5rem; color: #1F2937;'>
-                    Pre-IPO Investment Memo Generator
-                </h1>
-                <p style='font-size: 1.1rem; color: #4B5563;'>
-                    Upload an IPO/DRHP PDF to generate a structured investment memo with optional Q&A.
-                </p>
-            </div>
+        <div style='display: flex; flex-direction: column; justify-content: center;'>
+            <h1 style='margin-bottom: 0.3rem; font-size: 2.2rem; font-weight: 800; color: #1F2937;'>Pre-IPO Investment Memo Generator</h1>
+            <p style='font-size: 1.05rem; color: #4B5563; margin-top: 0;'>Upload an IPO/DRHP PDF to generate a structured investment memo with optional Q&A.</p>
+        </div>
         """, unsafe_allow_html=True)
+
 
 # ---------------------------
 # INPUT SECTION
