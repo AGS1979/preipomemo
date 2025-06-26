@@ -5,26 +5,33 @@ import base64
 from pipeline import run_pipeline, PDFQueryEngine
 
 # ---------------------------
-# PAGE CONFIG & BRANDING CSS
+# PAGE CONFIG & GLOBAL STYLE
 # ---------------------------
 st.set_page_config(page_title="IPO Investment Memo Generator", layout="wide")
 
 st.markdown("""
     <style>
-    footer:after {
-        content:'' !important;
-        display:none !important;
-    }
+    footer:after {content:'' !important; display:none !important;}
     #MainMenu {visibility: visible;}
     header {visibility: visible;}
+
     html, body, [class*="css"] {
         font-family: 'Segoe UI', sans-serif;
         color: #222;
         background-color: #f9f9f9;
     }
+
+    .block-container {
+        padding-top: 1rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
     h1, h2, h3 {
         color: #00416A;
+        margin-bottom: 0.25rem;
     }
+
     .stButton>button {
         background-color: #00416A;
         color: white;
@@ -32,20 +39,43 @@ st.markdown("""
         border-radius: 6px;
         padding: 0.6em 1.5em;
     }
+
     .stTextInput>div>div>input,
     .stTextArea textarea {
         border-radius: 6px;
     }
-    .block-container {
-        padding-top: 2rem;
-        padding-left: 3rem;
-        padding-right: 3rem;
+
+    .header-container {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .header-text h1 {
+        font-size: 1.75rem;
+        font-weight: 800;
+        margin: 0;
+        color: #1F2937;
+    }
+
+    .header-text p {
+        margin: 0.2rem 0 0;
+        font-size: 1rem;
+        color: #4B5563;
+    }
+
+    .footer-note {
+        text-align: left;
+        font-size: 0.85rem;
+        color: gray;
+        margin-top: 3rem;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # ---------------------------
-# BASE64 LOGO HELPER
+# LOGO BASE64
 # ---------------------------
 def get_base64_logo(path="logo.png"):
     with open(path, "rb") as f:
@@ -54,20 +84,20 @@ def get_base64_logo(path="logo.png"):
 logo_base64 = get_base64_logo()
 
 # ---------------------------
-# HEADER: LOGO + TITLE (Left-Aligned)
+# HEADER: LEFT-ALIGNED LOGO + TITLE
 # ---------------------------
 st.markdown(f"""
-<div style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 2rem;">
-    <img src="data:image/png;base64,{logo_base64}" style="height: 60px; max-width: 160px;" />
-    <div>
-        <h1 style="margin-bottom: 0.3rem; font-size: 2rem; font-weight: 800; color: #1F2937;">Pre-IPO Investment Memo Generator</h1>
-        <p style="font-size: 1rem; color: #4B5563; margin-top: 0;">Upload an IPO/DRHP PDF to generate a structured investment memo with optional Q&amp;A.</p>
+<div class="header-container">
+    <img src="data:image/png;base64,{logo_base64}" style="height: 60px; width: auto;" />
+    <div class="header-text">
+        <h1>Pre-IPO Investment Memo Generator</h1>
+        <p>Upload an IPO/DRHP PDF to generate a structured investment memo with optional Q&amp;A.</p>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
 # ---------------------------
-# INPUT SECTION
+# UPLOAD SECTION
 # ---------------------------
 st.subheader("📤 Upload PDF and Focus")
 pdf_file = st.file_uploader("Upload DRHP or IPO PDF", type=["pdf"])
@@ -78,7 +108,7 @@ custom_focus = st.text_area(
 )
 
 # ---------------------------
-# PROCESS + OUTPUT
+# GENERATE MEMO
 # ---------------------------
 if pdf_file:
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
@@ -102,7 +132,7 @@ if pdf_file:
                 st.error(f"❌ Error: {e}")
 
     # ---------------------------
-    # Q&A SECTION
+    # QUESTION & ANSWER
     # ---------------------------
     st.markdown("---")
     st.subheader("🔍 Ask Questions from the PDF")
@@ -122,8 +152,7 @@ if pdf_file:
 # FOOTER
 # ---------------------------
 st.markdown("""
-    <hr>
-    <div style='text-align: left; font-size: 0.85rem; color: gray;'>
-        © 2025 YourCompanyName. All rights reserved.
-    </div>
+<div class="footer-note">
+    © 2025 YourCompanyName. All rights reserved.
+</div>
 """, unsafe_allow_html=True)
