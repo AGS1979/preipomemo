@@ -84,17 +84,23 @@ def get_base64_logo(path="logo.png"):
 logo_base64 = get_base64_logo()
 
 # ---------------------------
-# HEADER: LEFT-ALIGNED LOGO + TITLE
+# HEADER: Smaller logo + Title below
 # ---------------------------
 st.markdown(f"""
-<div class="header-container">
-    <img src="data:image/png;base64,{logo_base64}" style="height: 60px; width: auto;" />
-    <div class="header-text">
-        <h1>Pre-IPO Investment Memo Generator</h1>
-        <p>Upload an IPO/DRHP PDF to generate a structured investment memo with optional Q&amp;A.</p>
+<div style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; margin-bottom: 1.5rem;">
+    <img src="data:image/png;base64,{logo_base64}" style="height: 36px; width: auto;" />
+
+    <div style="margin-left: 2px;">
+        <h1 style="font-size: 1.6rem; font-weight: 800; color: #1F2937; margin-bottom: 0.2rem;">
+            Pre-IPO Investment Memo Generator
+        </h1>
+        <p style="font-size: 1rem; color: #4B5563; margin-top: 0;">
+            Upload an IPO/DRHP PDF to generate a structured investment memo with optional Q&amp;A.
+        </p>
     </div>
 </div>
 """, unsafe_allow_html=True)
+
 
 # ---------------------------
 # UPLOAD SECTION
