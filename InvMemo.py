@@ -83,7 +83,7 @@ st.markdown("""
 with st.container():
     col1, col2 = st.columns([0.12, 0.88])
     with col1:
-        st.image("logo.png", use_column_width=False, width=120)
+        st.image("logo.png", width=120)
     with col2:
         st.markdown("""
         <div style='display: flex; flex-direction: column; justify-content: center;'>
