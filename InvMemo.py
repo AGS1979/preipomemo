@@ -20,7 +20,6 @@ st.markdown("""
     #MainMenu {visibility: visible;}
     header {visibility: visible;}
 
-    /* Font & color styling */
     html, body, [class*="css"] {
         font-family: 'Segoe UI', sans-serif;
         color: #222;
@@ -46,48 +45,61 @@ st.markdown("""
 
     .block-container {
         padding-top: 2rem;
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+
+    .header-container {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .logo-img {
+        height: 80px;
+        max-width: 180px;
+        object-fit: contain;
+    }
+
+    .header-text h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1F2937;
+    }
+
+    .header-text p {
+        margin: 0.2rem 0 0;
+        font-size: 1rem;
+        color: #4B5563;
     }
     </style>
 """, unsafe_allow_html=True)
 
-
-
-import streamlit as st
-
-# Top padding removal
+# ---------------------------
+# HEADER: LOGO + TITLE
+# ---------------------------
 st.markdown("""
-    <style>
-    .block-container {
-        padding-top: 2rem;
-    }
-    </style>
+<div class="header-container">
+    <img src="logo.png" class="logo-img">
+    <div class="header-text">
+        <h1>Pre-IPO Investment Memo Generator</h1>
+        <p>Upload an IPO/DRHP PDF to generate a structured investment memo with optional Q&amp;A.</p>
+    </div>
+</div>
 """, unsafe_allow_html=True)
-
-# Header layout with logo and title aligned
-with st.container():
-    col1, col2 = st.columns([0.15, 0.85])
-    with col1:
-        st.image("logo.png", width=80)  # adjust width as per image clarity
-    with col2:
-        st.markdown("""
-        <div style='display: flex; flex-direction: column; justify-content: center;'>
-            <h1 style='margin-bottom: 0.3rem; font-size: 2.2rem; font-weight: 800; color: #1F2937;'>Pre-IPO Investment Memo Generator</h1>
-            <p style='font-size: 1.05rem; color: #4B5563; margin-top: 0;'>Upload an IPO/DRHP PDF to generate a structured investment memo with optional Q&A.</p>
-        </div>
-        """, unsafe_allow_html=True)
-
 
 # ---------------------------
 # INPUT SECTION
 # ---------------------------
-with st.container():
-    st.subheader("📤 Upload PDF and Focus")
-    pdf_file = st.file_uploader("Upload DRHP or IPO PDF", type=["pdf"])
+st.subheader("📤 Upload PDF and Focus")
+pdf_file = st.file_uploader("Upload DRHP or IPO PDF", type=["pdf"])
 
-    custom_focus = st.text_area(
-        "Optional: Add custom notes to guide memo generation",
-        help="Example: 'Focus more on the EV strategy and Indian market exposure'"
-    )
+custom_focus = st.text_area(
+    "Optional: Add custom notes to guide memo generation",
+    help="Example: 'Focus more on the EV strategy and Indian market exposure'"
+)
 
 # ---------------------------
 # PROCESS + OUTPUT
