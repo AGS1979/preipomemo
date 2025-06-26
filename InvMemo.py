@@ -3,28 +3,76 @@ from pathlib import Path
 import tempfile
 from pipeline import run_pipeline, PDFQueryEngine
 
+# ---------------------------
+# PAGE CONFIG & BRANDING CSS
+# ---------------------------
 st.set_page_config(page_title="IPO Investment Memo Generator", layout="wide")
 
+st.markdown("""
+    <style>
+    /* Hide Streamlit branding */
+    #MainMenu, footer {visibility: hidden;}
+    header {visibility: hidden;}
+
+    /* Professional fonts and color palette */
+    html, body, [class*="css"] {
+        font-family: 'Segoe UI', sans-serif;
+        color: #222;
+        background-color: #f9f9f9;
+    }
+
+    h1, h2, h3 {
+        color: #00416A;
+    }
+
+    .stButton>button {
+        background-color: #00416A;
+        color: white;
+        font-weight: bold;
+        border-radius: 6px;
+        padding: 0.6em 1.5em;
+    }
+
+    .stTextInput>div>div>input,
+    .stTextArea textarea {
+        border-radius: 6px;
+    }
+
+    .block-container {
+        padding-top: 2rem;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# ---------------------------
+# LOGO + TITLE
+# ---------------------------
+st.image("logo.png", width=180)
 st.title("📄 Pre-IPO Investment Memo Generator")
-st.markdown("Upload an IPO/DRHP PDF and get a structured investment memo.")
+st.markdown("Upload an IPO/DRHP PDF and get a structured investment memo with optional Q&A.")
 
-# Upload PDF
-pdf_file = st.file_uploader("Upload DRHP or IPO PDF", type=["pdf"])
+# ---------------------------
+# INPUT SECTION
+# ---------------------------
+with st.container():
+    st.subheader("📤 Upload PDF and Focus")
+    pdf_file = st.file_uploader("Upload DRHP or IPO PDF", type=["pdf"])
 
-# Optional: Add custom focus
-custom_focus = st.text_area(
-    "Optional: Add custom notes or focus areas to guide memo generation",
-    help="Example: 'Focus more on the EV strategy and Indian market exposure'"
-)
+    custom_focus = st.text_area(
+        "Optional: Add custom notes to guide memo generation",
+        help="Example: 'Focus more on the EV strategy and Indian market exposure'"
+    )
 
-# Buttons and results
+# ---------------------------
+# PROCESS + OUTPUT
+# ---------------------------
 if pdf_file:
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
         tmp_file.write(pdf_file.read())
         tmp_pdf_path = tmp_file.name
 
     if st.button("📘 Generate Investment Memo"):
-        with st.spinner("Processing and analyzing the document..."):
+        with st.spinner("⏳ Processing and analyzing the document..."):
             try:
                 memo_path = run_pipeline(tmp_pdf_path, custom_focus)
                 st.success("✅ Memo generated successfully!")
@@ -39,16 +87,29 @@ if pdf_file:
             except Exception as e:
                 st.error(f"❌ Error: {e}")
 
+    # ---------------------------
+    # Q&A SECTION
+    # ---------------------------
     st.markdown("---")
     st.subheader("🔍 Ask Questions from the PDF")
-    query = st.text_input("Type your question below (e.g., What are the risk factors?)")
+    query = st.text_input("Type your question (e.g., What are the key risk factors?)")
 
     if query:
         try:
             engine = PDFQueryEngine()
-            with st.spinner("Answering your query using DeepSeek..."):
+            with st.spinner("💬 Querying document..."):
                 answer_html, cited_pages = engine.answer_query(tmp_pdf_path, query)
                 st.markdown(answer_html, unsafe_allow_html=True)
                 st.caption(f"📄 Cited Pages: {cited_pages}")
         except Exception as e:
             st.error(f"❌ Error: {e}")
+
+# ---------------------------
+# FOOTER
+# ---------------------------
+st.markdown("""
+    <hr>
+    <div style='text-align: center; font-size: 0.85rem; color: gray;'>
+        © 2025 YourCompanyName. All rights reserved.
+    </div>
+""", unsafe_allow_html=True)
