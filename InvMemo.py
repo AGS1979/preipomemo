@@ -159,6 +159,6 @@ if pdf_file:
 # ---------------------------
 st.markdown("""
 <div class="footer-note">
-    © 2025 YourCompanyName. All rights reserved.
+    © 2025 Aranca. All rights reserved.
 </div>
 """, unsafe_allow_html=True)
