@@ -80,15 +80,15 @@ st.markdown("""
 # ---------------------------
 # HEADER: LOGO + TITLE
 # ---------------------------
-st.markdown("""
-<div class="header-container">
-    <img src="logo.png" class="logo-img">
-    <div class="header-text">
-        <h1>Pre-IPO Investment Memo Generator</h1>
-        <p>Upload an IPO/DRHP PDF to generate a structured investment memo with optional Q&amp;A.</p>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+with st.container():
+    col1, col2 = st.columns([0.15, 0.85])
+    with col1:
+        st.image("logo.png", width=100)  # Adjust width as needed
+    with col2:
+        st.markdown("""
+        <h1 style='margin-bottom: 0.3rem; font-size: 2.2rem; font-weight: 800; color: #1F2937;'>Pre-IPO Investment Memo Generator</h1>
+        <p style='font-size: 1.05rem; color: #4B5563; margin-top: 0;'>Upload an IPO/DRHP PDF to generate a structured investment memo with optional Q&amp;A.</p>
+        """, unsafe_allow_html=True)
 
 # ---------------------------
 # INPUT SECTION
