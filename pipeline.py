@@ -22,16 +22,17 @@ CHUNK_SIZE = 50
 # ========== CORE UTILITIES ==========
 
 def clean_markdown(text):
-    text = re.sub(r'#+\s?', '', text)
-    text = re.sub(r'\*\*(.*?)\*\*', r'\1', text)
-    text = re.sub(r'\*(.*?)\*', r'\1', text)
-    text = re.sub(r'---', '', text)
-    text = re.sub(r'__+', '', text)
-    text = re.sub(r'\*Next section:.*?\*', '', text)
-    text = re.sub(r'\*Bottom Line:.*?\*', '', text)
-    text = re.sub(r'^---$', '', text, flags=re.MULTILINE)
-    text = re.sub(r'\n{3,}', '\n\n', text)
+    text = re.sub(r'#+\s*', '', text)  # remove markdown headers
+    text = re.sub(r'\*\*(.*?)\*\*', r'\1', text)  # bold markdown
+    text = re.sub(r'\*(.*?)\*', r'\1', text)  # italic markdown
+    text = re.sub(r'_+', '', text)  # underscore artifacts
+    text = re.sub(r'\n{3,}', '\n\n', text)  # excess newlines
+    text = re.sub(r'^[-*•]+\s+', '', text, flags=re.MULTILINE)  # bullets
+    text = re.sub(r'Section\s\d+[:.]?', '', text, flags=re.IGNORECASE)  # e.g., "Section 2:"
+    text = re.sub(r'(Next|Previous) section:.*', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'This section .*?(focuses on|explores|explains).*?\.', '', text, flags=re.IGNORECASE)
     return text.strip()
+
 
 def extract_text_by_page(pdf_path):
     doc = fitz.open(pdf_path)
@@ -107,15 +108,17 @@ def generate_memo_sections(filtered_text, custom_notes=""):
     sections = {}
     for title in section_titles:
         prompt = (
-            f"Write a 500+ word investment memo section on the topic: {title[3:]}. "
-            "Avoid repeating the section title in the beginning. "
-            "Avoid references to the next or previous sections. "
-            "Use a natural, analytical tone like an equity research analyst. "
-            "Format it in plain text without markdown or symbols. "
+            f"You are writing a professional pre-IPO investment memo section titled: {title[3:]}. "
+            "Please generate ~500 words of clean, structured, analytical prose suitable for institutional investors. "
+            "Do not mention this is a memo. Avoid starting with the section title, and avoid phrases like 'In this section' or 'previously discussed'. "
+            "Strictly avoid markdown (no asterisks, hashes, underscores). Use plain text only.\n\n"
         )
+
         if custom_notes:
-            prompt += f"Also cover: {custom_notes.strip()}\n\n"
-        prompt += f"DRHP Text:\n{filtered_text[:16000]}"
+            prompt += f"Focus on this angle: {custom_notes.strip()}\n\n"
+
+        prompt += f"Relevant DRHP Text:\n{filtered_text[:16000]}"
+
 
         messages = [
             {"role": "system", "content": "You are an expert financial analyst."},
@@ -129,6 +132,7 @@ def generate_memo_sections(filtered_text, custom_notes=""):
         response.raise_for_status()
         raw_content = response.json()['choices'][0]['message']['content']
         cleaned = clean_markdown(raw_content)
+        cleaned = re.sub(rf"^{re.escape(title[3:])}[\s:—-]*", "", cleaned, flags=re.IGNORECASE)
         sections[title] = cleaned
 
     return sections
