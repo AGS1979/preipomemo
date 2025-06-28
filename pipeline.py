@@ -284,7 +284,7 @@ Memo:
 """
 
     headers = {
-        "Authorization": f"Bearer {os.getenv('DEEPSEEK_API_KEY')}",
+        "Authorization": f"Bearer {st.secrets['deepseek']['api_key']}",
         "Content-Type": "application/json"
     }
 
