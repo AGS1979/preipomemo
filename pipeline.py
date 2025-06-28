@@ -12,6 +12,7 @@ from PyPDF2 import PdfReader
 from docx import Document
 from docx.shared import Pt, Inches
 from sentence_transformers import SentenceTransformer
+from collections import defaultdict
 
 # ========== CONFIG ==========
 DEEPSEEK_API_KEY = st.secrets["deepseek"]["api_key"]
@@ -253,3 +254,87 @@ class PDFQueryEngine:
         answer = self.query_deepseek(selected, query)
         cited_pages = [pages[i] for i in I[0]]
         return answer, cited_pages
+
+
+
+def extract_raw_text(docx_path):
+    doc = Document(docx_path)
+    return "\n".join(para.text.strip() for para in doc.paragraphs if para.text.strip())
+
+def call_deepseek_summary(text, company_name):
+    prompt = f"""
+You are an investment analyst tasked with converting the following pre-IPO memo into a concise infographic-ready summary.
+
+Summarize the key points for each of these sections:
+1. IPO Offer Details
+2. Company Overview
+3. Industry Overview and Outlook
+4. Business Model
+5. Financial Highlights
+6. Guidance and Outlook on future financial performance
+7. Peer Comparison and Competitors
+8. Risks
+9. Investment Highlights
+
+Each section should contain 3–5 bullet points maximum. Use crisp, bullet-style formatting (no paragraphs). Keep each bullet point under 30 words.
+
+Company: {company_name}
+Memo:
+{text}
+"""
+
+    headers = {
+        "Authorization": f"Bearer {os.getenv('DEEPSEEK_API_KEY')}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "model": "deepseek-chat",
+        "messages": [
+            {"role": "system", "content": "You are a helpful analyst."},
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.3
+    }
+
+    response = requests.post("https://api.deepseek.com/v1/chat/completions", headers=headers, json=payload)
+    response.raise_for_status()
+    return response.json()["choices"][0]["message"]["content"]
+
+def bold_labels(text):
+    return re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
+
+def parse_deepseek_response(summary_text):
+    sections = defaultdict(list)
+    current_section = None
+    lines = summary_text.splitlines()
+    for line in lines:
+        line = line.strip()
+        section_match = re.match(r"^#+\s+\*+\d+\.\s+(.*?)\*+\s*$", line)
+        if section_match:
+            current_section = section_match.group(1).strip()
+            continue
+        simple_header = re.match(r"^#+\s+(.*)", line)
+        if simple_header:
+            current_section = simple_header.group(1).strip()
+            continue
+        bullet_match = re.match(r"^- (.+)", line)
+        if bullet_match and current_section:
+            bullet = bold_labels(bullet_match.group(1).strip())
+            sections[current_section].append(bullet)
+    return dict(sections)
+
+from jinja2 import Template
+
+def generate_infographic_html(docx_path, company_name, base_template_path="base_infographic.html"):
+    raw_text = extract_raw_text(docx_path)
+    summary = call_deepseek_summary(raw_text, company_name)
+    sections = parse_deepseek_response(summary)
+
+    with open(base_template_path, "r", encoding="utf-8") as f:
+        html_template = f.read()
+
+    template = Template(html_template)
+    rendered_html = template.render(company_name=company_name, sections=sections)
+
+    return rendered_html
