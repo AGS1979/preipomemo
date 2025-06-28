@@ -2,9 +2,8 @@ import streamlit as st
 from pathlib import Path
 import tempfile
 import base64
-from pipeline import run_pipeline, PDFQueryEngine
 import streamlit.components.v1 as components
-from pipeline import generate_infographic_html
+from pipeline import run_pipeline, PDFQueryEngine, generate_infographic_html
 
 # ---------------------------
 # PAGE CONFIG & GLOBAL STYLE
@@ -102,7 +101,14 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
+# ---------------------------
+# STATE INITIALIZATION
+# ---------------------------
+if "memo_generated" not in st.session_state:
+    st.session_state.memo_generated = False
 
+if "memo_path" not in st.session_state:
+    st.session_state.memo_path = None
 
 # ---------------------------
 # UPLOAD SECTION
@@ -127,9 +133,10 @@ if pdf_file:
         with st.spinner("⏳ Processing and analyzing the document..."):
             try:
                 memo_path = run_pipeline(tmp_pdf_path, custom_focus)
+                st.session_state.memo_generated = True
+                st.session_state.memo_path = memo_path
                 st.success("✅ Memo generated successfully!")
 
-                # 📥 Download memo
                 with open(memo_path, "rb") as f:
                     st.download_button(
                         label="📥 Download Memo",
@@ -137,34 +144,39 @@ if pdf_file:
                         file_name=Path(memo_path).name,
                         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                     )
-
-                # 🎨 Infographic generation (moved out of the file open block)
-                if st.button("🎨 Generate Infographic"):
-                    try:
-                        with st.spinner("🖼️ Generating infographic..."):
-                            company_name = Path(memo_path).stem.split("_")[0]
-                            infographic_html = generate_infographic_html(
-                                docx_path=memo_path,
-                                company_name=company_name
-                            )
-                            st.components.v1.html(infographic_html, height=1000, scrolling=True)
-
-                            st.download_button(
-                                label="📥 Download Infographic HTML",
-                                data=infographic_html,
-                                file_name="infographic.html",
-                                mime="text/html"
-                            )
-                    except Exception as e:
-                        st.error(f"❌ Error generating infographic: {e}")
-
             except Exception as e:
-                st.error(f"❌ Error: {e}")
+                st.error(f"❌ Error generating memo: {e}")
 
+# ---------------------------
+# GENERATE INFOGRAPHIC
+# ---------------------------
+if st.session_state.memo_generated and st.session_state.memo_path:
+    st.markdown("---")
+    st.subheader("🎨 Infographic View")
 
-    # ---------------------------
-    # QUESTION & ANSWER
-    # ---------------------------
+    if st.button("🎨 Generate Infographic"):
+        try:
+            with st.spinner("🖼️ Generating infographic..."):
+                company_name = Path(st.session_state.memo_path).stem.split("_")[0]
+                infographic_html = generate_infographic_html(
+                    docx_path=st.session_state.memo_path,
+                    company_name=company_name
+                )
+                st.components.v1.html(infographic_html, height=1000, scrolling=True)
+
+                st.download_button(
+                    label="📥 Download Infographic HTML",
+                    data=infographic_html,
+                    file_name="infographic.html",
+                    mime="text/html"
+                )
+        except Exception as e:
+            st.error(f"❌ Error generating infographic: {e}")
+
+# ---------------------------
+# QUESTION & ANSWER
+# ---------------------------
+if pdf_file:
     st.markdown("---")
     st.subheader("🔍 Ask Questions from the PDF")
     query = st.text_input("Type your question (e.g., What are the key risk factors?)")
