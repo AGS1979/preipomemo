@@ -23,7 +23,7 @@ st.markdown("""
     }
 
     .block-container {
-        padding-top: 1rem;
+        padding-top: 3rem; /* Changed from 1rem to 3rem */
         padding-left: 2rem;
         padding-right: 2rem;
     }
@@ -44,26 +44,6 @@ st.markdown("""
     .stTextInput>div>div>input,
     .stTextArea textarea {
         border-radius: 6px;
-    }
-
-    .header-container {
-        display: flex;
-        align-items: center;
-        gap: 1.25rem;
-        margin-bottom: 1.25rem;
-    }
-
-    .header-text h1 {
-        font-size: 1.75rem;
-        font-weight: 800;
-        margin: 0;
-        color: #1F2937;
-    }
-
-    .header-text p {
-        margin: 0.2rem 0 0;
-        font-size: 1rem;
-        color: #4B5563;
     }
 
     .footer-note {
